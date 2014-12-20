@@ -19,7 +19,6 @@ public class Chunk {
 	
 	//relative coords
 	public Voxel getVoxel(Vec2 coords){
-		modif = true;
 		return Voxel.voxels.get(data[coords.X()%16][coords.Y()%16]);
 	}
 	

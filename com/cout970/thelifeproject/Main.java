@@ -17,7 +17,7 @@ import com.cout970.thelifeproject.entities.EntityObserver;
 import com.cout970.thelifeproject.lib.Reference;
 import com.cout970.thelifeproject.lib.Textures;
 import com.cout970.thelifeproject.render.RenderManger;
-import com.cout970.thelifeproject.threads.ThreadWork;
+import com.cout970.thelifeproject.util.Logger;
 import com.cout970.thelifeproject.voxel.Voxel;
 import com.cout970.thelifeproject.voxel.VoxelAir;
 import com.cout970.thelifeproject.voxel.VoxelStone;
@@ -29,29 +29,38 @@ public class Main {
 
 	public static World theWorld;
 	public static EntityObserver thePlayer;
-	public static ThreadWork calculos;
 	public static volatile boolean working = true;
+	public static int fpsCounter;
+	private static long oldTime;
+	public static int fpsLastSecond;
+	public static long debugTimer;
 
 	public static void main(String[] args){
 		initGame();
 		loadTextures();
 		initVoxels();
-		calculos = new ThreadWork();
-		calculos.start();
 		GameLoop();
-		calculos.interrupt();
 	}
-	
 	
 	public static void GameLoop() {
 		while(working){
-			working = !Display.isCloseRequested();
+			debugTimer = System.currentTimeMillis();
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+			theWorld.updateTick();
 			RenderManger.instance.renderWorld();
 			RenderManger.instance.renderEntities();
 			EventDispacher.ListenKeyboard();
+			if(System.currentTimeMillis()-oldTime >= 1000){
+				oldTime = System.currentTimeMillis();
+				fpsLastSecond = fpsCounter;
+				System.out.println(fpsLastSecond+" FPS");
+				fpsCounter = 1;
+			}else fpsCounter++;
+			
 			Display.update();
-			Display.sync(60);
+			Logger.debug(System.currentTimeMillis()-debugTimer+"ms");
+			Display.sync(200);
+			working = !Display.isCloseRequested();
 		}
 		Display.destroy();
 	}

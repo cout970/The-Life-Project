@@ -4,6 +4,8 @@ import static org.lwjgl.input.Keyboard.*;
 
 import org.lwjgl.LWJGLException;
 
+import com.cout970.thelifeproject.entities.EntityIA;
+
 public class EventDispacher {
 
 	public static int count;
@@ -16,7 +18,7 @@ public class EventDispacher {
 				e.printStackTrace();
 			}
 		}
-		if(count > 0)count--;
+		if(count > 0)count-=8;
 		else{
 			if(isKeyDown(KEY_A)){
 				Main.thePlayer.x--;
@@ -32,6 +34,13 @@ public class EventDispacher {
 			}
 			if(isKeyDown(KEY_S)){
 				Main.thePlayer.y--;
+				count = 8;
+			}
+			if(isKeyDown(KEY_C)){
+				EntityIA e = new EntityIA(Main.theWorld);
+				e.x = Main.thePlayer.x;
+				e.y = Main.thePlayer.y;
+				Main.theWorld.spawnEntityinWorld(e);
 				count = 8;
 			}
 		}		
